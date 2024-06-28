@@ -27,11 +27,6 @@ public:
     double y() const { return e[1]; }
     double z() const { return e[2]; }
 
-    vec3 operator+(vec3 &other)
-    {
-        return vec3(e[0] + other.e[0], e[1] + other.e[1], e[2] + other.e[2]);
-    }
-
     // Operator overloads to make it easier to work with vec3 objects
     // Note: find parallels in other languages
     // What should + mean in the context of vectors.
@@ -40,4 +35,8 @@ public:
     // I think it's implied from the individual elements
 };
 
+inline vec3 operator+(const vec3 &u, const vec3 &v)
+{
+    return vec3(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
+}
 #endif

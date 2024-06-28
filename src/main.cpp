@@ -1,5 +1,4 @@
-#include <iostream>
-#include "headers/vec3.h"
+#include "main.h"
 
 int main()
 {
