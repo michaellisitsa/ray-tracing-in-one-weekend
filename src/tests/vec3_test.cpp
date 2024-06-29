@@ -52,3 +52,10 @@ TEST_CASE("chained addition assignment")
     // v3 shouldn't be modified
     REQUIRE(v3.x() == 1);
 }
+
+TEST_CASE("chained division assignment")
+{
+    vec3 v1 = vec3(2, 4, 6);
+    v1 /= 2;
+    REQUIRE(v1.x() == 1);
+}
