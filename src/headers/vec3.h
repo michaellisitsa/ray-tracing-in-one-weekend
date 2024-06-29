@@ -33,10 +33,47 @@ public:
     // I guess it adds the vectors elementwise to create a result vector
     // Do operator overloads define a type, or is that implied from the individual elements?
     // I think it's implied from the individual elements
+
+    // This is a const member function, so it can't modify the object it's called on
+    // i.e. any members of this class.
+    vec3 operator-() const
+    {
+        return vec3(-e[0], -e[1], -e[2]);
+    }
+
+    // This is a read-only version of the function.
+    // You get a copy of the element at index i.
+    // You can't assign to it.
+    double operator[](int i) const
+    {
+        return e[i];
+    }
+
+    // This one you can write to
+    double &operator[](int i)
+    {
+        return e[i];
+    }
+
+    vec3 &operator+=(const vec3 &v)
+    {
+        e[0] += v.e[0];
+        e[1] += v.e[1];
+        e[2] += v.e[2];
+        return *this;
+    }
 };
 
+// This version can accept temporary objects, const objects, and non-const objects as its arguments, making it more flexible,
+// than having this overload inside the class
 inline vec3 operator+(const vec3 &u, const vec3 &v)
 {
     return vec3(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
 }
+
+inline vec3 operator-(const vec3 &u, const vec3 &v)
+{
+    return vec3(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
+}
+
 #endif
