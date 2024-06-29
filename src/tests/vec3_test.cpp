@@ -1,5 +1,7 @@
 #include "../headers/vec3.h"
 #include "../../test/catch.hpp"
+#include "../headers/color.h"
+#include <sstream>
 
 TEST_CASE("addition")
 {
@@ -58,4 +60,28 @@ TEST_CASE("chained division assignment")
     vec3 v1 = vec3(2, 4, 6);
     v1 /= 2;
     REQUIRE(v1.x() == 1);
+}
+
+TEST_CASE("shift left operator")
+{
+    std::stringstream ss;
+    vec3 v1 = vec3(1, 2, 3);
+    ss << v1;
+    REQUIRE(ss.str() == "1 2 3");
+}
+
+TEST_CASE("color: black write")
+{
+    std::stringstream ss;
+    color c = color(1, 1, 1);
+    write_color(ss, c);
+    REQUIRE(ss.str() == "255 255 255\n");
+}
+
+TEST_CASE("color: purple write")
+{
+    std::stringstream ss;
+    color c = color(0.5, 0, 0.5);
+    write_color(ss, c);
+    REQUIRE(ss.str() == "127 0 127\n");
 }
