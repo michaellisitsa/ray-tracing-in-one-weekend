@@ -74,7 +74,7 @@ TEST_CASE("color: black write")
 {
     std::stringstream ss;
     color c = color(1, 1, 1);
-    write_color(ss, c);
+    raytracer::write_color(ss, c);
     REQUIRE(ss.str() == "255 255 255\n");
 }
 
@@ -82,6 +82,6 @@ TEST_CASE("color: purple write")
 {
     std::stringstream ss;
     color c = color(0.5, 0, 0.5);
-    write_color(ss, c);
+    raytracer::write_color(ss, c);
     REQUIRE(ss.str() == "127 0 127\n");
 }
