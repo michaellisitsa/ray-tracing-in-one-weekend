@@ -1,4 +1,4 @@
-#include "../headers/vec3.h"
+#include "../headers/ray.h"
 #include "../../test/catch.hpp"
 #include "../headers/color.h"
 #include <sstream>
@@ -84,4 +84,15 @@ TEST_CASE("color: purple write")
     color c = color(0.5, 0, 0.5);
     raytracer::write_color(ss, c);
     REQUIRE(ss.str() == "127 0 127\n");
+}
+
+TEST_CASE("ray: at")
+{
+    vec3 origin = vec3(1, 1, 1);
+    vec3 direction = vec3(1, 2, 3);
+    ray r = ray(origin, direction);
+    vec3 result = r.at(2);
+    REQUIRE(result.x() == 3);
+    REQUIRE(result.y() == 5);
+    REQUIRE(result.z() == 7);
 }
