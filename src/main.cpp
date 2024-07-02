@@ -3,6 +3,7 @@
 #include "headers/color.h"
 #include "headers/ray.h"
 #include "headers/sphere.h"
+#include "headers/hittable_list.h"
 
 color ray_color(const ray &r)
 {
@@ -12,8 +13,13 @@ color ray_color(const ray &r)
     // I guess if its as unit vector then it'll be from -1 to 1
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
-    sphere s = sphere(point3(0, 0, -1), 0.5);
-    s.hit(r, rec);
+    // sphere s = sphere(point3(0, 0, -1), 0.5);
+    sphere s1 = sphere(point3(0, 0, -2), 0.5);
+    sphere s2 = sphere(point3(0.5, 0.5, -1), 0.5);
+    hittable_list list;
+    list.add(std::make_shared<sphere>(s1));
+    list.add(std::make_shared<sphere>(s2));
+    list.hit(r, rec);
     if (rec.t > 0.0)
     {
         // map the unit vector to colors
