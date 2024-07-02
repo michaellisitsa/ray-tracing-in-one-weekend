@@ -2,60 +2,22 @@
 #include "headers/vec3.h"
 #include "headers/color.h"
 #include "headers/ray.h"
-
-// Accepts a ray, and definition of a circle. Circle is const, so is ray
-double hit_sphere(const point3 &center, double radius, const ray &r)
-{
-
-    // ray = 𝐐+𝑡𝐝
-    // Equation of sphere
-    // C is the center of the sphere
-    // (𝐂−𝐏)⋅(𝐂−𝐏)=𝑟2
-    // Expands to
-    // (𝐂−(𝐐+𝑡𝐝))⋅(𝐂−(𝐐+𝑡𝐝))=𝑟2
-    // and distribute dot product
-    // 𝑡2𝐝⋅𝐝−2𝑡𝐝⋅(𝐂−𝐐)+(𝐂−𝐐)⋅(𝐂−𝐐)=𝑟2
-    // Solving the roots:
-    // (−𝑏±𝑏2−4𝑎𝑐)/(√2𝑎)
-    // a = d⋅d
-    // b = -2𝐝⋅(𝐂−𝐐)
-    // c = (𝐂−𝐐)⋅(𝐂−𝐐)−𝑟2
-    //
-    // This function must calculate the roots
-    // If the roots are real and positive, then the ray intersects the sphere
-    // If the roots are real and negative, then the ray does not intersect the sphere
-    // If the roots are complex, then the ray intersects the sphere at a tangent
-    double a = dot(r.direction(), r.direction());
-    vec3 oc = center - r.origin();            // (𝐂−𝐐)
-    double b = -2.0 * dot(r.direction(), oc); // -2𝐝⋅(𝐂−𝐐)
-    double c = dot(oc, oc) - radius * radius; // (𝐂−𝐐)⋅(𝐂−𝐐)−𝑟2
-    double discriminant = b * b - 4 * a * c;
-    if (discriminant < 0)
-    {
-        return -1.0;
-    }
-    else
-    {
-        return (-b - sqrt(discriminant)) / (2.0 * a);
-    }
-}
+#include "headers/sphere.h"
 
 color ray_color(const ray &r)
 {
+    auto rec = hit_record();
     // Let's find the vertical position
     // We get this off the ray direction, but how do we know where are we in the image right now.
     // I guess if its as unit vector then it'll be from -1 to 1
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
-    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
-    if (t > 0.0)
+    sphere s = sphere(point3(0, 0, -1), 0.5);
+    s.hit(r, rec);
+    if (rec.t > 0.0)
     {
-        // calculate normal vector.
-        // get the full ray
-        vec3 intersection_point = r.at(t);
-        vec3 normal = unit_vector(intersection_point - vec3(0, 0, -1));
         // map the unit vector to colors
-        return 0.5 * color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
+        return 0.5 * color(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
     }
     vec3 unit_direction = unit_vector(r.direction());
     double vertical_position = unit_direction.y();

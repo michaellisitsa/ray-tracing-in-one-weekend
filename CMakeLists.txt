@@ -9,6 +9,8 @@ add_executable(main src/main.cpp)
 # Use the Catch Library?
 add_executable(main_test src/tests/main_test.cpp test/tests-main.cpp)
 add_executable(vec3_test src/tests/vec3_test.cpp test/tests-main.cpp)
+add_executable(hittable_test src/tests/hittable_test.cpp test/tests-main.cpp)
 
 add_custom_target(test_main ALL DEPENDS ${CMAKE_BINARY_DIR}/main_test COMMAND ${CMAKE_BINARY_DIR}/main_test)
 add_custom_target(test_vec3 ALL DEPENDS ${CMAKE_BINARY_DIR}/vec3_test COMMAND ${CMAKE_BINARY_DIR}/vec3_test)
+add_custom_target(test_hittable ALL DEPENDS ${CMAKE_BINARY_DIR}/hittable_test COMMAND ${CMAKE_BINARY_DIR}/hittable_test)
