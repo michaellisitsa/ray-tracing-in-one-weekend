@@ -4,7 +4,7 @@
 #include "headers/ray.h"
 
 // Accepts a ray, and definition of a circle. Circle is const, so is ray
-bool hit_sphere(const point3 &center, double radius, const ray &r)
+double hit_sphere(const point3 &center, double radius, const ray &r)
 {
 
     // ray = 𝐐+𝑡𝐝
@@ -30,7 +30,14 @@ bool hit_sphere(const point3 &center, double radius, const ray &r)
     double b = -2.0 * dot(r.direction(), oc); // -2𝐝⋅(𝐂−𝐐)
     double c = dot(oc, oc) - radius * radius; // (𝐂−𝐐)⋅(𝐂−𝐐)−𝑟2
     double discriminant = b * b - 4 * a * c;
-    return discriminant >= 0;
+    if (discriminant < 0)
+    {
+        return -1.0;
+    }
+    else
+    {
+        return (-b - sqrt(discriminant)) / (2.0 * a);
+    }
 }
 
 color ray_color(const ray &r)
@@ -40,8 +47,16 @@ color ray_color(const ray &r)
     // I guess if its as unit vector then it'll be from -1 to 1
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
-    if (hit_sphere(point3(0, 0, -1), 0.5, r))
-        return color(1, 0, 0);
+    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
+    if (t > 0.0)
+    {
+        // calculate normal vector.
+        // get the full ray
+        vec3 intersection_point = r.at(t);
+        vec3 normal = unit_vector(intersection_point - vec3(0, 0, -1));
+        // map the unit vector to colors
+        return 0.5 * color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
+    }
     vec3 unit_direction = unit_vector(r.direction());
     double vertical_position = unit_direction.y();
     auto a = 0.5 * (unit_direction.y() + 1.0);
