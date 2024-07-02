@@ -12,6 +12,19 @@ struct hit_record
     point3 p;
     vec3 normal;
     double t;
+    bool front_face;
+    // We also want to know which side of the object we hit.
+    // We know which direction the ray has come from, and we know the object's normal at that point.
+    // But the normal could be in either direction, so we need to know if we hit the front or the back of the object.
+    // I guess we can find the angle between the ray and the normal which ever direction it has
+    // The dot product of vectors divided by their magnitudes gives the cosine of the angle between them
+    // θ = cos-1 [ (a · b) / (|a| |b|) ]
+    // Dot product is also useful to find the project of one vector on another
+    // a.b = |a| |b| cos(θ)
+    // a.b = |a| |b| cos(90) = 0 // because its perpendicular.
+    // Nature of dot product is that two vectors are in parallel in the same direction of dot produt is positive
+    // How do we store this information? can we store it as a unit vector?
+    vec3 normal_face;
 };
 
 class hittable

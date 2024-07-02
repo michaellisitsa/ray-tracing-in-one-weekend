@@ -37,3 +37,23 @@ TEST_CASE("hit: strafes the ball")
     s.hit(r, rec);
     REQUIRE(rec.t >= 0);
 }
+
+TEST_CASE("hit: Sets the correct surface normal direction")
+{
+    sphere s = sphere(point3(0, 0, -1), 0.5);
+    ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
+    hit_record rec;
+    s.hit(r, rec);
+    // Normal faces back up to the origin
+    REQUIRE(rec.normal.z() == 1);
+}
+
+TEST_CASE("hit: Sets the opposite surface normal direction when hit from inside")
+{
+    sphere s = sphere(point3(0, 0, -1), 0.5);
+    ray r = ray(point3(0, 0, -1), vec3(0, 0, -1));
+    hit_record rec;
+    s.hit(r, rec);
+    // Normal faces back up to the origin
+    REQUIRE(rec.normal.z() == 1);
+}

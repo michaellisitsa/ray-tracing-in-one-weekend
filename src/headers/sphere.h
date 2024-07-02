@@ -48,7 +48,11 @@ public:
         {
             rec.t = (-b - sqrt(discriminant)) / (2.0 * a);
             rec.p = r.at(rec.t);
-            rec.normal = unit_vector(rec.p - center);
+            vec3 normal = unit_vector(rec.p - center);
+            // Check which direction was hit
+            // If the dot product of the normal and the ray direction is negative, then the ray hit the front of the sphere
+            rec.front_face = dot(r.direction(), normal) < 0;
+            rec.normal = rec.front_face ? normal : -normal;
             return true;
         }
     };
