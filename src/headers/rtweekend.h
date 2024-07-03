@@ -5,6 +5,7 @@
 #include <limits>
 #include <memory>
 #include <iostream>
+#include <random>
 
 // C++ std Usings
 using std::make_shared;
@@ -20,6 +21,13 @@ inline double degrees_to_radians(double degrees)
 {
     return degrees * pi / 180.0;
 };
+
+inline double random_double(double min = 0, double max = 1)
+{
+    static std::uniform_real_distribution<double> distribution(min, max);
+    static std::mt19937 generator;
+    return distribution(generator);
+}
 
 // Common Headers
 #include "ray.h"
