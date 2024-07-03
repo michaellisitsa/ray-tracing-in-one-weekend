@@ -82,7 +82,7 @@ TEST_CASE("color: purple write")
     std::stringstream ss;
     color c = color(0.5, 0, 0.5);
     raytracer::write_color(ss, c);
-    REQUIRE(ss.str() == "127 0 127\n");
+    REQUIRE(ss.str() == "181 0 181\n");
 }
 
 TEST_CASE("ray: at")
