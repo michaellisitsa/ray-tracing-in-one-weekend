@@ -3,8 +3,12 @@
 #include "headers/sphere.h"
 #include "headers/hittable_list.h"
 
-color ray_color(const ray &r, const hittable &world)
+color ray_color(const ray &r, int depth, const hittable &world)
 {
+    if (depth <= 0)
+    {
+        return color(0, 0, 0);
+    }
     auto rec = hit_record();
     // Let's find the vertical position
     // We get this off the ray direction, but how do we know where are we in the image right now.
@@ -12,12 +16,10 @@ color ray_color(const ray &r, const hittable &world)
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
     // sphere s = sphere(point3(0, 0, -1), 0.5);
-    world.hit(r, interval(0, infinity), rec);
-
-    if (rec.t > 0.0)
+    if (world.hit(r, interval(0, infinity), rec))
     {
-        // map the unit vector to colors
-        return 0.5 * color(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+        vec3 direction = random_on_hemisphere(rec.normal);
+        return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
     }
     vec3 unit_direction = unit_vector(r.direction());
     double vertical_position = unit_direction.y();
@@ -103,7 +105,7 @@ int main()
             ray r = ray(camera_center, pixel_center - camera_center);
             // double r = double(i) / image_width;
             // double b = 1.0;
-            color pixel_color = ray_color(r, world);
+            color pixel_color = ray_color(r, 10, world);
             raytracer::write_color(std::cout, pixel_color);
         }
     }
