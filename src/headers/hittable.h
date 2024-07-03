@@ -32,7 +32,7 @@ class hittable
     // That hit function takes a hit_record and updates it with the hit information
 public:
     // Virtual as it can be overridden in sub-classes. = 0 means it's a pure virtual function
-    virtual bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record &rec) const = 0;
+    virtual bool hit(const ray &r, interval ray_t, hit_record &rec) const = 0;
 
     // We need a virtual destructor to ensure that the destructor of the derived class is called
     ~hittable() = default;

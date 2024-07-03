@@ -9,7 +9,7 @@ public:
     sphere() {}
     sphere(point3 cen, double r) : center(cen), radius(r) {}
 
-    virtual bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record &rec) const
+    virtual bool hit(const ray &r, interval ray_t, hit_record &rec) const
     {
         // We want to find if something has been hit.
         // We want to find the roots of the equation.
@@ -44,11 +44,11 @@ public:
 
         auto root = (-b - sqrt(discriminant)) / (2.0 * a);
 
-        if (root < ray_tmin || root > ray_tmax)
+        if (root < ray_t.min || root > ray_t.max)
         {
             // switch the sign of the sqrt discriminant
             root = (-b + sqrt(discriminant)) / (2.0 * a);
-            if (root < ray_tmin || root > ray_tmax)
+            if (root < ray_t.min || root > ray_t.max)
                 return false;
         }
         rec.t = root;
