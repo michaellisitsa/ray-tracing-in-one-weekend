@@ -3,13 +3,16 @@
 #include "../headers/sphere.h"
 #include "../headers/hittable_list.h"
 
+double T_MIN = 0.0;
+double T_MAX = infinity;
+
 TEST_CASE("sphere hit: hits something")
 {
     sphere s = sphere(point3(0, 0, -1), 0.5);
     // Straight through the middle of the sphere
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
     hit_record rec;
-    s.hit(r, rec);
+    REQUIRE(s.hit(r, T_MIN, T_MAX, rec) == true);
     REQUIRE(rec.t > 0);
 }
 
@@ -18,8 +21,9 @@ TEST_CASE("sphere hit: misses when shooting in wrong direction")
     sphere s = sphere(point3(0, 0, -1), 0.5);
     ray r = ray(point3(0, 0, 0), vec3(0, 0, 1));
     hit_record rec;
-    s.hit(r, rec);
-    REQUIRE(rec.t < 0);
+    // TODO: Figure out why 0.0 is not equal to 0.0
+    // What should the value be when the ray misses.
+    REQUIRE(s.hit(r, T_MIN, T_MAX, rec) == false);
 }
 
 TEST_CASE("sphere hit: misses when ball positioned away")
@@ -27,8 +31,7 @@ TEST_CASE("sphere hit: misses when ball positioned away")
     sphere s = sphere(point3(0, -1, 0), 0.5);
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
     hit_record rec;
-    s.hit(r, rec);
-    REQUIRE(rec.t < 0);
+    REQUIRE(s.hit(r, T_MIN, T_MAX, rec) == false);
 }
 
 TEST_CASE("sphere hit: strafes the ball")
@@ -36,7 +39,7 @@ TEST_CASE("sphere hit: strafes the ball")
     sphere s = sphere(point3(0, 0.5, -1), 0.5);
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
     hit_record rec;
-    s.hit(r, rec);
+    REQUIRE(s.hit(r, T_MIN, T_MAX, rec) == true);
     REQUIRE(rec.t >= 0);
 }
 
@@ -45,7 +48,7 @@ TEST_CASE("sphere hit: Sets the correct surface normal direction")
     sphere s = sphere(point3(0, 0, -1), 0.5);
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
     hit_record rec;
-    s.hit(r, rec);
+    s.hit(r, T_MIN, T_MAX, rec);
     // Normal faces back up to the origin
     REQUIRE(rec.normal.z() == 1);
 }
@@ -55,7 +58,7 @@ TEST_CASE("sphere hit: Sets the opposite surface normal direction when hit from 
     sphere s = sphere(point3(0, 0, -1), 0.5);
     ray r = ray(point3(0, 0, -1), vec3(0, 0, -1));
     hit_record rec;
-    s.hit(r, rec);
+    s.hit(r, T_MIN, T_MAX, rec);
     // Normal faces back up to the origin
     REQUIRE(rec.normal.z() == 1);
 }
@@ -69,7 +72,7 @@ TEST_CASE("hittable_list.hit: Hits the nearest shape")
     list.add(std::make_shared<sphere>(s2));
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -0.25));
     auto rec = hit_record();
-    list.hit(r, rec);
+    list.hit(r, T_MIN, T_MAX, rec);
     REQUIRE(rec.p.length() == 0.5);
 }
 
@@ -82,7 +85,7 @@ TEST_CASE("hittable_list.hit: Hits the correct shape when the first shape is off
     list.add(std::make_shared<sphere>(s2));
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -0.25));
     auto rec = hit_record();
-    list.hit(r, rec);
+    list.hit(r, T_MIN, T_MAX, rec);
     REQUIRE(rec.p.length() == 1.5);
 }
 
@@ -95,7 +98,7 @@ TEST_CASE("hittable_list.hit: Miss both objects")
     list.add(std::make_shared<sphere>(s2));
     ray r = ray(point3(0, 0, 0), vec3(0, 0, -1));
     auto rec = hit_record();
-    list.hit(r, rec);
+    list.hit(r, T_MIN, T_MAX, rec);
     REQUIRE(rec.t <= 0);
     REQUIRE(rec.p.length() == 0);
 }

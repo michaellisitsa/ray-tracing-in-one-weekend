@@ -9,7 +9,7 @@ public:
     sphere() {}
     sphere(point3 cen, double r) : center(cen), radius(r) {}
 
-    virtual bool hit(const ray &r, hit_record &rec) const
+    virtual bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record &rec) const
     {
         // We want to find if something has been hit.
         // We want to find the roots of the equation.
@@ -40,21 +40,25 @@ public:
         double c = dot(oc, oc) - radius * radius; // (𝐂−𝐐)⋅(𝐂−𝐐)−𝑟2
         double discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
-        {
-            rec.t = -1.0;
             return false;
-        }
-        else
+
+        auto root = (-b - sqrt(discriminant)) / (2.0 * a);
+
+        if (root < ray_tmin || root > ray_tmax)
         {
-            rec.t = (-b - sqrt(discriminant)) / (2.0 * a);
-            rec.p = r.at(rec.t);
-            vec3 normal = unit_vector(rec.p - center);
-            // Check which direction was hit
-            // If the dot product of the normal and the ray direction is negative, then the ray hit the front of the sphere
-            rec.front_face = dot(r.direction(), normal) < 0;
-            rec.normal = rec.front_face ? normal : -normal;
-            return true;
+            // switch the sign of the sqrt discriminant
+            root = (-b + sqrt(discriminant)) / (2.0 * a);
+            if (root < ray_tmin || root > ray_tmax)
+                return false;
         }
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        vec3 normal = unit_vector(rec.p - center);
+        // Check which direction was hit
+        // If the dot product of the normal and the ray direction is negative, then the ray hit the front of the sphere
+        rec.front_face = dot(r.direction(), normal) < 0;
+        rec.normal = rec.front_face ? normal : -normal;
+        return true;
     };
 
 private:

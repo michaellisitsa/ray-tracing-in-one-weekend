@@ -13,7 +13,7 @@ public:
         hittables.push_back(object);
     }
 
-    virtual bool hit(const ray &r, hit_record &rec) const
+    virtual bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record &rec) const
     {
         // If I call each object's hit method, do I overwrite the same hit_record?
         // Or should I store an array of hit records as well?
@@ -21,20 +21,21 @@ public:
         // and then calculate the color of that hit.
         // So we could reduce down all the hit records to a single hit record based on the smallest t.
 
+        hit_record temp_rec;
+        bool hit_anything = false;
+        auto closest_so_far = ray_tmax;
+
         for (const auto &object : hittables)
         {
-            auto current_rec = hit_record();
-            if (object->hit(r, current_rec))
+            if (object->hit(r, ray_tmin, closest_so_far, temp_rec))
             {
-                // We can replace the hit record if the current hit record is closer
-                // What happens if none of the objects are hit, I guess it'll return nothing
-                if (!rec.t || current_rec.t < rec.t)
-                {
-                    rec = current_rec;
-                }
+                hit_anything = true;
+                closest_so_far = temp_rec.t;
+                rec = temp_rec;
             }
         }
-        return rec.t;
+
+        return hit_anything;
     }
 
 private:

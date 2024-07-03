@@ -12,7 +12,7 @@ color ray_color(const ray &r, const hittable &world)
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
     // sphere s = sphere(point3(0, 0, -1), 0.5);
-    world.hit(r, rec);
+    world.hit(r, 0, infinity, rec);
 
     if (rec.t > 0.0)
     {
