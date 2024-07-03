@@ -1,6 +1,5 @@
-#include "../headers/ray.h"
+#include "../headers/rtweekend.h"
 #include "../../test/catch.hpp"
-#include "../headers/color.h"
 #include <sstream>
 
 TEST_CASE("addition")

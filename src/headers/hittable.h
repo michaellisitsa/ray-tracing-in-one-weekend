@@ -1,8 +1,6 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.h"
-
 // Since we're going to recursively shoot rays when calculating the shade of a pixel
 // we need to record when a hit has occurred
 struct hit_record

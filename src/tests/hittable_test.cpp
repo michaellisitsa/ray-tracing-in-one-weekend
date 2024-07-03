@@ -1,3 +1,4 @@
+#include "../headers/rtweekend.h"
 #include "../../test/catch.hpp"
 #include "../headers/sphere.h"
 #include "../headers/hittable_list.h"

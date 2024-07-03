@@ -1,11 +1,9 @@
+#include "headers/rtweekend.h"
 #include "main.h"
-#include "headers/vec3.h"
-#include "headers/color.h"
-#include "headers/ray.h"
 #include "headers/sphere.h"
 #include "headers/hittable_list.h"
 
-color ray_color(const ray &r)
+color ray_color(const ray &r, const hittable &world)
 {
     auto rec = hit_record();
     // Let's find the vertical position
@@ -14,12 +12,8 @@ color ray_color(const ray &r)
     // linear blend between alpha = 1 blue, alpha = 0 white
     // blendedValue=(1−𝑎)⋅startValue+𝑎⋅endValue,
     // sphere s = sphere(point3(0, 0, -1), 0.5);
-    sphere s1 = sphere(point3(0, 0, -2), 0.5);
-    sphere s2 = sphere(point3(0.5, 0.5, -1), 0.5);
-    hittable_list list;
-    list.add(std::make_shared<sphere>(s1));
-    list.add(std::make_shared<sphere>(s2));
-    list.hit(r, rec);
+    world.hit(r, rec);
+
     if (rec.t > 0.0)
     {
         // map the unit vector to colors
@@ -35,7 +29,7 @@ int main()
 {
     // ideal ratio
     double aspect_ratio = 16.0 / 9.0;
-    int image_width = 400;
+    int image_width = 1000;
 
     int image_height = static_cast<int>(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
@@ -43,6 +37,11 @@ int main()
     // Camera
     // We need to position the camera at origin.
     auto camera_center = point3(0, 0, 0);
+
+    // World
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
     // Viewing direction is in the z-axis of length 1.0;
     // Which is half our viewport height
@@ -104,7 +103,7 @@ int main()
             ray r = ray(camera_center, pixel_center - camera_center);
             // double r = double(i) / image_width;
             // double b = 1.0;
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r, world);
             raytracer::write_color(std::cout, pixel_color);
         }
     }

@@ -4,11 +4,6 @@
 #ifndef VEC3_H
 #define VEC3_H
 
-#include <cmath>
-#include <iostream>
-
-using std::sqrt;
-
 class vec3
 {
     // This class needs to store 3 values for x y and z
